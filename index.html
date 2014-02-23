@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Lower!</title>
+
+	<style>
+		html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;}
+	</style>
+	
+	<script src="lib/createjs/easeljs/easeljs-0.7.1.min.js"></script>
+	<script>
+		var stage, canvas;
+
+		var KEYCODE_UP = 38;		//usefull keycode
+		var KEYCODE_DOWN = 40;		//usefull keycode
+		var KEYCODE_LEFT = 37;		//usefull keycode
+		var KEYCODE_RIGHT = 39;		//usefull keycode
+
+		var test_shape;
+		var moveL = moveR = moveU = moveD = false;
+
+		document.onkeydown = handleKeyDown;
+		document.onkeyup = handleKeyUp;
+
+		function init() {
+			canvas = document.getElementById("lower");
+			stage = new createjs.Stage(canvas);
+
+			setElementDimensions(canvas, window.innerWidth, window.innerHeight );
+
+			var background_img = new Image();
+			background_img.src = "images/forest_2560x1440.jpg";
+
+			var background = new createjs.Bitmap(background_img);
+			stage.addChild(background);
+
+			background.image.onload = function() {
+				scaleImage(background, window.innerWidth, window.innerHeight);
+			}
+
+			//draw ship body
+			test_shape = new createjs.Shape();
+			var g = test_shape.graphics;
+			g.clear();
+			g.beginStroke("#000000");
+
+			g.moveTo(0, 10);	//nose
+			g.lineTo(5, -6);	//rfin
+			g.lineTo(0, -2);	//notch
+			g.lineTo(-5, -6);	//lfin
+			g.closePath(); // nose
+
+			stage.addChild(test_shape);
+
+			createjs.Ticker.on("tick", tick);
+		}
+
+		function tick(event) {
+			stage.update(event);
+
+			if (moveL) {
+				test_shape.x -= 1;
+			};
+
+			if (moveR) {
+				test_shape.x += 1;
+			};
+
+			if (moveU) {
+				test_shape.y -= 1;
+			};
+
+			if (moveD) {
+				test_shape.y += 1;
+			};
+
+		}
+
+		function handleKeyDown(e) {
+			if(!e){ var e = window.event; }
+			switch(e.keyCode) {
+				case KEYCODE_LEFT:	moveL = true; return false;
+				case KEYCODE_RIGHT: moveR = true; return false;
+				case KEYCODE_UP:	moveU = true; return false;
+				case KEYCODE_DOWN:	moveD = true; return false;
+			}
+		}
+
+		function handleKeyUp(e) {
+			if(!e){ var e = window.event; }
+			switch(e.keyCode) {
+				case KEYCODE_LEFT:	moveL = false; break;
+				case KEYCODE_RIGHT: moveR = false; break;
+				case KEYCODE_UP:	moveU = false; break;
+				case KEYCODE_DOWN:	moveD = false; break;
+			}
+		}
+
+
+		// Set dimensions of element
+		function setElementDimensions(element, width, height) {
+			element.width = width;
+			element.height = height;
+		}
+		// Set dimensions of element end
+
+
+		// Scale images
+		// Scale image width
+		function scaleImageWidth(image, width) {
+			var self_width = image.image.width;
+			image.scaleX = width / self_width;
+		}
+
+		// Scale image height
+		function scaleImageHeight(image, height) {
+			var self_height = image.image.height;
+			image.scaleY = height / self_height;
+		}
+
+		// Scale image width and hieht
+		function scaleImage(image, width, height) {
+			var self_width = image.image.width,
+				self_height = image.image.height;
+
+			image.scaleX = width / self_width;
+			image.scaleY = height / self_height;
+		}
+		// Scale images end
+
+	</script>
+
+</head>
+
+<body onload="init()">
+	
+	<canvas id="lower"></canvas>
+
+</body>
+
+</html>
